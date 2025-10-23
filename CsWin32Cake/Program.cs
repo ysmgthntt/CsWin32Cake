@@ -31,7 +31,7 @@ static unsafe class Program
 
     //
 
-    const string szAppName = "CsWin32Cake";
+    const string szAppName = "Cake";
     static string strCake = "<text>";
     static int cCandles = 1;
     static BOOL bFlash = false;

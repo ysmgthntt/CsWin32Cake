@@ -5,7 +5,7 @@
 
 #include "cake.h"
 
-CsWin32Cake MENU
+Cake MENU
 BEGIN
     POPUP "Decoration"
         BEGIN
