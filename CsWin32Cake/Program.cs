@@ -5,6 +5,7 @@
 
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -47,27 +48,27 @@ static unsafe class Program
 
         hInst = hInstance;
 
+        wndclass.style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW;
+        wndclass.lpfnWndProc = WndProc;
+        wndclass.cbClsExtra = 0;
+        wndclass.cbWndExtra = 0;
+        wndclass.hInstance = hInstance;
+        wndclass.hIcon = LoadIcon(HINSTANCE.Null, IDI_APPLICATION);
+        wndclass.hCursor = LoadCursor(HINSTANCE.Null, IDC_ARROW);
+        wndclass.hbrBackground = (HBRUSH)GetStockObject(GET_STOCK_OBJECT_FLAGS.BLACK_BRUSH).Value;
+
         fixed (char* lpszAppName = szAppName)
-        fixed (char* lpWindowName = "Birthday Cake")
         {
-            wndclass.style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW;
-            wndclass.lpfnWndProc = WndProc;
-            wndclass.cbClsExtra = 0;
-            wndclass.cbWndExtra = 0;
-            wndclass.hInstance = hInstance;
-            wndclass.hIcon = LoadIcon(HINSTANCE.Null, IDI_APPLICATION);
-            wndclass.hCursor = LoadCursor(HINSTANCE.Null, IDC_ARROW);
-            wndclass.hbrBackground = (HBRUSH)GetStockObject(GET_STOCK_OBJECT_FLAGS.BLACK_BRUSH).Value;
             wndclass.lpszMenuName = lpszAppName;
             wndclass.lpszClassName = lpszAppName;
 
             if (!(BOOL)RegisterClass(wndclass))
                 return FALSE;
-
-            hwnd = CreateWindowEx(0, lpszAppName, lpWindowName,
-                                  WINDOW_STYLE.WS_TILEDWINDOW, 0, 0, 0, 0,
-                                  HWND.Null, HMENU.Null, hInstance, null);
         }
+
+        hwnd = CreateWindow(szAppName, "Birthday Cake",
+                            WINDOW_STYLE.WS_TILEDWINDOW, 0, 0, 0, 0,
+                            HWND.Null, HMENU.Null, hInstance, null);
 
         ShowWindow(hwnd, SHOW_FULLSCREEN);
         UpdateWindow(hwnd);
@@ -367,24 +368,20 @@ static unsafe class Program
     static void DisplayText(HDC hdc, Point pt1, Point pt2, short ht)
     {
         RECT rect;
-        HFONT hFont;
-        fixed (char* pszFaceName = "Script")
-            hFont = CreateFont(67, 0, 0, 0, 700, 0, 0, 0, (uint)FONT_CHARSET.OEM_CHARSET,
-                               0, 0, 0, 0, pszFaceName);
+        HFONT hFont = CreateFont(67, 0, 0, 0, 700, 0, 0, 0, (uint)FONT_CHARSET.OEM_CHARSET,
+                                 0, 0, 0, 0, "Script");
 
         SelectObject(hdc, hFont);
         SetRect(out rect, pt1.X + 50, pt1.Y + ht / 2, pt2.X - 50, pt2.Y);
 
         SetBkMode(hdc, BACKGROUND_MODE.TRANSPARENT);
-        fixed (char* lpchText = strCake)
-            DrawText(hdc, lpchText, strCake.Length, ref rect,
-                     DRAW_TEXT_FORMAT.DT_CENTER | DRAW_TEXT_FORMAT.DT_VCENTER | DRAW_TEXT_FORMAT.DT_WORDBREAK);
+        DrawText(hdc, strCake, ref rect,
+                 DRAW_TEXT_FORMAT.DT_CENTER | DRAW_TEXT_FORMAT.DT_VCENTER | DRAW_TEXT_FORMAT.DT_WORDBREAK);
 
         OffsetRect(ref rect, 1, 1);
 
-        fixed (char* lpchText = strCake)
-            DrawText(hdc, lpchText, strCake.Length, ref rect,
-                     DRAW_TEXT_FORMAT.DT_CENTER | DRAW_TEXT_FORMAT.DT_VCENTER | DRAW_TEXT_FORMAT.DT_WORDBREAK);
+        DrawText(hdc, strCake, ref rect,
+                 DRAW_TEXT_FORMAT.DT_CENTER | DRAW_TEXT_FORMAT.DT_VCENTER | DRAW_TEXT_FORMAT.DT_WORDBREAK);
 
         SetBkMode(hdc, BACKGROUND_MODE.OPAQUE);
         DeleteObject(SelectObject(hdc, GetStockObject(GET_STOCK_OBJECT_FLAGS.SYSTEM_FONT)));
@@ -396,6 +393,15 @@ static unsafe class Program
 
     static COLORREF RGB(uint r, uint g, uint b) => (COLORREF)(r | g << 8 | b << 16);
 
+    static HWND CreateWindow(string lpClassName, string lpWindowName, WINDOW_STYLE dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, void* lpParam)
+    {
+        fixed (char* lpClassNameLocal = lpClassName)
+        fixed (char* lpWindowNameLocal = lpWindowName)
+        {
+            return CreateWindowEx(0, lpClassNameLocal, lpWindowNameLocal, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+        }
+    }
+
     static nint DialogBox(HINSTANCE hInstance, string templateName, HWND hWndParent, DLGPROC lpDialogFunc)
     {
         fixed(char* lpTemplateName = templateName)
@@ -404,6 +410,23 @@ static unsafe class Program
         }
     }
 
-    [DllImport("GDI32.dll", ExactSpelling = true, EntryPoint = "CreateFontW"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-    static extern HFONT CreateFont(int cHeight, int cWidth, int cEscapement, int cOrientation, int cWeight, uint bItalic, uint bUnderline, uint bStrikeOut, uint iCharSet, uint iOutPrecision, uint iClipPrecision, uint iQuality, uint iPitchAndFamily, PCWSTR pszFaceName);
+    // CsWin32 の CreateFont だと MarshalDirectiveException が発生する。
+    static HFONT CreateFont(int cHeight, int cWidth, int cEscapement, int cOrientation, int cWeight, uint bItalic, uint bUnderline, uint bStrikeOut, uint iCharSet, uint iOutPrecision, uint iClipPrecision, uint iQuality, uint iPitchAndFamily, string pszFaceName)
+    {
+        fixed (char* pszFaceNameLocal = pszFaceName)
+        {
+            return CreateFont(cHeight, cWidth, cEscapement, cOrientation, cWidth, bItalic, bUnderline, bStrikeOut, iCharSet, iOutPrecision, iClipPrecision, iQuality, iPitchAndFamily, pszFaceNameLocal);
+        }
+        [DllImport("GDI32.dll", ExactSpelling = true, EntryPoint = "CreateFontW"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        static extern HFONT CreateFont(int cHeight, int cWidth, int cEscapement, int cOrientation, int cWeight, uint bItalic, uint bUnderline, uint bStrikeOut, uint iCharSet, uint iOutPrecision, uint iClipPrecision, uint iQuality, uint iPitchAndFamily, PCWSTR pszFaceName);
+    }
+
+    static int DrawText(HDC hdc, string text, ref RECT lprc, DRAW_TEXT_FORMAT format)
+    {
+        fixed (char* lpchText = text)
+        fixed (RECT* lprcLocal = &lprc)
+        {
+            return PInvoke.DrawText(hdc, lpchText, text.Length, lprcLocal, format);
+        }
+    }
 }
