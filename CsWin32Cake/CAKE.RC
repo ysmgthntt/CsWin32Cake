@@ -4,6 +4,13 @@
   ------------------------------------------------------*/
 
 #include "cake.h"
+/* #define "windows.h" */
+/* WinUser.h */
+#define WS_POPUP            0x80000000L
+#define WS_DLGFRAME         0x00400000L
+#define BS_AUTOCHECKBOX     0x00000003L
+#define IDOK                1
+#define IDCANCEL            2
 
 Cake MENU
 BEGIN
