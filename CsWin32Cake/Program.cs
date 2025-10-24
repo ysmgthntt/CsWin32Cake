@@ -415,7 +415,7 @@ static unsafe class Program
     {
         fixed (char* pszFaceNameLocal = pszFaceName)
         {
-            return CreateFont(cHeight, cWidth, cEscapement, cOrientation, cWidth, bItalic, bUnderline, bStrikeOut, iCharSet, iOutPrecision, iClipPrecision, iQuality, iPitchAndFamily, pszFaceNameLocal);
+            return CreateFont(cHeight, cWidth, cEscapement, cOrientation, cWeight, bItalic, bUnderline, bStrikeOut, iCharSet, iOutPrecision, iClipPrecision, iQuality, iPitchAndFamily, pszFaceNameLocal);
         }
         [DllImport("GDI32.dll", ExactSpelling = true, EntryPoint = "CreateFontW"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         static extern HFONT CreateFont(int cHeight, int cWidth, int cEscapement, int cOrientation, int cWeight, uint bItalic, uint bUnderline, uint bStrikeOut, uint iCharSet, uint iOutPrecision, uint iClipPrecision, uint iQuality, uint iPitchAndFamily, PCWSTR pszFaceName);
