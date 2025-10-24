@@ -91,7 +91,7 @@ static unsafe class Program
                                              RGB(0, 0, 0xFF) ];
     static DLGPROC lpSettingsProc = null!;
 
-    static HBITMAP[] hbmFlame = new HBITMAP[3];
+    static readonly HBITMAP[] hbmFlame = new HBITMAP[3];
     static int iTextColor;
 
     static LRESULT WndProc(HWND hwnd, uint iMessage, WPARAM wParam, LPARAM lParam)
@@ -288,11 +288,11 @@ static unsafe class Program
     }
 
 
-    static int[] pos = [0, 7, 15];
-    static Point[] apt = [new(0, 0), new(0, 15), new(15, 15)];
+    static readonly int[] pos = [0, 7, 15];
+    static readonly Point[] apt = [new(0, 0), new(0, 15), new(15, 15)];
 
-    static int[] pos2 = [3, 7, 11];
-    static Point[] aptInner = [new(7, 10), new(3, 17), new(7, 20), new(11, 17)];
+    static readonly int[] pos2 = [3, 7, 11];
+    static readonly Point[] aptInner = [new(7, 10), new(3, 17), new(7, 20), new(11, 17)];
 
     static HBITMAP CreateFlameBitmap(HDC hdc, int i)
     {
@@ -322,13 +322,13 @@ static unsafe class Program
 
 
     static short xOrig, yOrig, iStep = 0;
-    static short[] x = new short[8];
-    static short[] y = new short[8];
-    static short[] xInc = [-1, 0, 1, -1, 1, -1, 0, 1];
-    static short[] yInc = [-1, -1, -1, 0, 0, 1, 1, 1];
-    static COLORREF[] clr = new COLORREF[8];
-    static COLORREF Black = RGB(0, 0, 0);
-    static COLORREF White = RGB(255, 255, 255);
+    static readonly short[] x = new short[8];
+    static readonly short[] y = new short[8];
+    static readonly short[] xInc = [-1, 0, 1, -1, 1, -1, 0, 1];
+    static readonly short[] yInc = [-1, -1, -1, 0, 0, 1, 1, 1];
+    static readonly COLORREF[] clr = new COLORREF[8];
+    static readonly COLORREF Black = RGB(0, 0, 0);
+    static readonly COLORREF White = RGB(255, 255, 255);
 
     static void Firework(HDC hdc)
     {
