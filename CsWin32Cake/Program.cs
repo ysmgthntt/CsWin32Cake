@@ -24,11 +24,11 @@ static unsafe class Program
     // CAKE.H
 
     const nuint IDM_SETTINGS = 1;
-    const nuint IDM_BURNING = 2;
+    const nuint IDM_BURNING  = 2;
 
-    const int ID_CAKETEXT = 101;
+    const int ID_CAKETEXT   = 101;
     const int ID_NUMCANDLES = 102;
-    const int ID_FLASH = 103;
+    const int ID_FLASH      = 103;
 
     //
 
@@ -42,24 +42,24 @@ static unsafe class Program
     {
         HINSTANCE hInstance = (HINSTANCE)GetModuleHandle((PCWSTR)null);
 
-        HWND hwnd;
-        MSG msg;
+        HWND      hwnd;
+        MSG       msg;
         WNDCLASSW wndclass;
 
         hInst = hInstance;
 
-        wndclass.style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW;
-        wndclass.lpfnWndProc = WndProc;
-        wndclass.cbClsExtra = 0;
-        wndclass.cbWndExtra = 0;
-        wndclass.hInstance = hInstance;
-        wndclass.hIcon = LoadIcon(HINSTANCE.Null, IDI_APPLICATION);
-        wndclass.hCursor = LoadCursor(HINSTANCE.Null, IDC_ARROW);
+        wndclass.style         = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW;
+        wndclass.lpfnWndProc   = WndProc;
+        wndclass.cbClsExtra    = 0;
+        wndclass.cbWndExtra    = 0;
+        wndclass.hInstance     = hInstance;
+        wndclass.hIcon         = LoadIcon(HINSTANCE.Null, IDI_APPLICATION);
+        wndclass.hCursor       = LoadCursor(HINSTANCE.Null, IDC_ARROW);
         wndclass.hbrBackground = (HBRUSH)GetStockObject(GET_STOCK_OBJECT_FLAGS.BLACK_BRUSH).Value;
 
         fixed (char* lpszAppName = szAppName)
         {
-            wndclass.lpszMenuName = lpszAppName;
+            wndclass.lpszMenuName  = lpszAppName;
             wndclass.lpszClassName = lpszAppName;
 
             if (!(BOOL)RegisterClass(wndclass))
@@ -83,7 +83,7 @@ static unsafe class Program
 
 
     static readonly COLORREF clrIcing = RGB(0xFF, 0xC0, 0xC0);
-    static readonly Point pt1 = new(40, 125);
+    static readonly Point pt1 = new( 40, 125);
     static readonly Point pt2 = new(600, 275);
     static readonly short ht = 50;
     static readonly COLORREF[] clrCandle = [ RGB(0xFF, 0, 0),
@@ -96,11 +96,11 @@ static unsafe class Program
 
     static LRESULT WndProc(HWND hwnd, uint iMessage, WPARAM wParam, LPARAM lParam)
     {
-        HPEN hpen;
-        HDC hdc, hdcMem;
-        int i;
+        HPEN        hpen;
+        HDC         hdc, hdcMem;
+        int         i;
         PAINTSTRUCT ps;
-        RECT rect;
+        RECT        rect;
 
         switch (iMessage)
         {
