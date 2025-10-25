@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Win32Resource>cake.res</Win32Resource>
+    <Description>Birthday Cake, programmed by Charles Petzold, November 1985</Description>
   </PropertyGroup>
 
   <ItemGroup>
