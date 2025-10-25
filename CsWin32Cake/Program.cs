@@ -165,9 +165,9 @@ static unsafe class Program
 
                 SelectObject(hdc, GetStockObject(GET_STOCK_OBJECT_FLAGS.BLACK_PEN));
 
-                MoveToEx(hdc, (short)pt1.X, (short)pt1.Y, null);
+                MoveToEx(hdc, (short)pt1.X, (short)pt1.Y);
                 LineTo(hdc, (short)pt1.X, (short)pt2.Y);
-                MoveToEx(hdc, (short)pt2.X, (short)pt1.Y, null);
+                MoveToEx(hdc, (short)pt2.X, (short)pt1.Y);
                 LineTo(hdc, (short)pt2.X, (short)pt2.Y);
 
                 DisplayText(hdc, pt1, pt2, ht);
